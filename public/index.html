@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>道路の不具合通報フォーム</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- LIFF SDK追加 -->
+    <script defer charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <!-- ローディング画面 -->
+    <div id="loader" class="loader-overlay hidden">
+        <div class="loader"></div>
+        <p id="loader-text" class="loader-text">処理中です...</p>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="container">
+        <form id="report-form" novalidate>
+            <h2>道路の不具合を通報</h2>
+
+            <!-- LINE連携状態表示 -->
+            <div id="line-status" class="line-status hidden">
+                <div class="line-status-content">
+                    <i class="fab fa-line line-icon"></i>
+                    <span id="line-status-text">LINE連携を確認中...</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">1. 通報内容</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="type1" name="type" value="雑草" required>
+                        <label for="type1">雑草</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="type2" name="type" value="倒木">
+                        <label for="type2">倒木</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="type3" name="type" value="路面の穴ぼこ・段差">
+                        <label for="type3">路面の穴ぼこ・段差</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="type4" name="type" value="落下物・汚れ">
+                        <label for="type4">落下物・汚れ</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="type-other" name="type" value="その他">
+                        <label for="type-other">その他</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="details" class="form-label">
+                    詳細（１００文字まで）
+                    <span class="label-note" id="details-required-note"></span>
+                </label>
+                <textarea id="details" name="details" rows="4" placeholder="例：直径20cm程度の穴ぼこ" maxlength="100"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="photo">3. 現場の写真 (任意)</label>
+                <div class="photo-controls">
+                    <label for="photo" class="button-like-input">
+                        <i class="fas fa-file-image"></i> ファイルを選択
+                    </label>
+                    <input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
+                </div>
+                <img id="image-preview" src="#" alt="写真プレビュー"/>
+            </div>
+
+            <div class="form-group">
+                <label>4. 現場の場所</label>
+                <div id="map-wrapper">
+                    <div id="map"></div>
+                    <i id="center-pin" class="fas fa-map-marker-alt"></i>
+                </div>
+                <div id="coords-display">地図を動かして位置を合わせてください</div>
+                <input type="hidden" id="latitude" name="latitude" required>
+                <input type="hidden" id="longitude" name="longitude" required>
+                <!-- LINEアクセストークン用の隠しフィールド -->
+                <input type="hidden" id="accessToken" name="accessToken">
+                <input type="hidden" id="userId" name="userId">
+            </div>
+
+            <button type="submit" id="btn-submit" disabled>不具合の種類を選択してください</button>
+        </form>
+    </div>
+</body>
+</html>
