@@ -169,6 +169,7 @@ async function saveToFirestoreAndStorage(data) {
         // Firestore保存
         const docRef = await db.collection('reports').add({
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            status: '未処理', // デフォルトステータス
             latitude: data.latitude,
             longitude: data.longitude,
             googleMapLink,
