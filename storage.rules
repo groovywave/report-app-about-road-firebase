@@ -2,7 +2,11 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
-      allow read, write: if true;
+      // 読み取りは誰でもOK（地図で表示するため）
+      allow read: if true;
+      // 書き込みは誰でもOK（通報時の写真アップロードのため）
+      // 本来はバリデーションを入れるべきだが、今回は簡易的に許可
+      allow write: if true;
     }
   }
 }

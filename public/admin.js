@@ -1,192 +1,202 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    let map;
-    let markers = [];
-    let reports = [];
+// 認証後に呼び出される関数
+window.startAdminApp = function (user) {
+    console.log('Starting admin app for:', user.email);
+    initMap();
+    loadReports();
+};
 
-    // 地図の初期化
-    function initMap() {
-        // 日本全体を表示（データ読み込み後に調整）
-        map = L.map('admin-map').setView([36.2048, 138.2529], 5);
 
-        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-            attribution: "地理院タイル（GSI）",
-            maxZoom: 18
-        }).addTo(map);
-    }
 
-    // データの読み込み
-    async function loadReports() {
-        try {
-            const db = firebase.firestore();
-            const snapshot = await db.collection('reports')
-                .orderBy('timestamp', 'desc')
-                .limit(100)
-                .get();
+let map;
+let markers = [];
+let reports = [];
 
-            const listEl = document.getElementById('report-list');
-            listEl.innerHTML = ''; // クリア
+// 地図の初期化
+function initMap() {
+    if (map) return;
+    // 日本全体を表示（データ読み込み後に調整）
+    map = L.map('admin-map').setView([36.2048, 138.2529], 5);
 
-            if (snapshot.empty) {
-                listEl.innerHTML = '<li class="report-item" style="text-align: center;">データがありません</li>';
-                return;
-            }
+    L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+        attribution: "地理院タイル（GSI）",
+        maxZoom: 18
+    }).addTo(map);
+}
 
-            const bounds = L.latLngBounds();
+// データの読み込み
+async function loadReports() {
+    // タイムアウト設定（10秒）
+    const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('読み込みがタイムアウトしました。ネットワーク接続を確認してください。')), 10000)
+    );
 
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const id = doc.id;
-                reports.push({ id, ...data });
+    try {
+        const db = firebase.firestore();
+        // Firestoreの取得とタイムアウトを競走させる
+        const snapshot = await Promise.race([
+            db.collection('reports').limit(100).get(),
+            timeoutPromise
+        ]);
 
-                // リストアイテム作成
-                const li = createListItem(id, data);
-                listEl.appendChild(li);
+        const tbody = document.getElementById('report-list');
+        tbody.innerHTML = ''; // クリア
 
-                // マーカー作成
-                if (data.latitude && data.longitude) {
-                    const marker = L.marker([data.latitude, data.longitude])
-                        .addTo(map)
-                        .bindPopup(createPopupContent(data));
-
-                    marker.reportId = id;
-                    markers.push(marker);
-                    bounds.extend([data.latitude, data.longitude]);
-
-                    // マーカークリックイベント
-                    marker.on('click', () => {
-                        highlightListItem(id);
-                    });
-                }
-            });
-
-            // 全マーカーが入るようにズーム調整
-            if (markers.length > 0) {
-                map.fitBounds(bounds, { padding: [50, 50] });
-            }
-
-        } catch (error) {
-            console.error("Error getting documents: ", error);
-            document.getElementById('report-list').innerHTML =
-                `<li class="report-item" style="color: red;">エラーが発生しました: ${error.message}</li>`;
-        }
-    }
-
-    function createListItem(id, data) {
-        const li = document.createElement('li');
-        li.className = 'report-item';
-        li.dataset.id = id;
-
-        const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ja-JP') : '日時不明';
-        const type = data.type || '不明';
-        const details = data.details || '詳細なし';
-        const photoUrl = data.photoUrl || '';
-
-        let imageHtml = '';
-        if (photoUrl) {
-            imageHtml = `<img src="${photoUrl}" class="report-image-thumb" loading="lazy" alt="現場写真">`;
+        if (snapshot.empty) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">データがありません</td></tr>';
+            return;
         }
 
-        const status = data.status || '未処理';
-        const statusClass = status === '処理済' ? 'status-processed' : 'status-unprocessed';
+        const bounds = L.latLngBounds();
 
-        li.innerHTML = `
-            <div class="report-header">
-                <div>
-                    <span class="report-type">${type}</span>
-                    <span class="report-status ${statusClass}">${status}</span>
-                </div>
-                <span class="report-date">${date}</span>
-            </div>
-            <div class="report-details">${details}</div>
-            <div class="status-control" style="margin-top: 10px; display: none;">
-                <select class="status-select" onchange="updateStatus('${id}', this.value)">
-                    <option value="未処理" ${status === '未処理' ? 'selected' : ''}>未処理</option>
-                    <option value="処理済" ${status === '処理済' ? 'selected' : ''}>処理済</option>
-                </select>
-            </div>
-            ${imageHtml}
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const id = doc.id;
+            reports.push({ id, ...data });
+
+            // テーブル行作成
+            const tr = createTableRow(id, data);
+            tbody.appendChild(tr);
+
+            // マーカー作成
+            if (data.latitude && data.longitude) {
+                const marker = L.marker([data.latitude, data.longitude])
+                    .addTo(map)
+                    .bindPopup(createPopupContent(data));
+
+                marker.reportId = id;
+                markers.push(marker);
+                bounds.extend([data.latitude, data.longitude]);
+
+                // マーカークリックイベント
+                marker.on('click', () => {
+                    highlightTableRow(id);
+                });
+            }
+        });
+
+        // 全マーカーが入るようにズーム調整
+        if (markers.length > 0) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }
+
+    } catch (error) {
+        console.error("Error getting documents: ", error);
+        document.getElementById('report-list').innerHTML =
+            `<tr><td colspan="8" style="color: red;">エラーが発生しました: ${error.message}</td></tr>`;
+    }
+}
+
+function createTableRow(id, data) {
+    const tr = document.createElement('tr');
+    tr.dataset.id = id;
+
+    const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ja-JP') : '日時不明';
+    const type = data.type || '不明';
+    const details = data.details || '';
+    const lat = data.latitude ? data.latitude.toFixed(6) : '-';
+    const lng = data.longitude ? data.longitude.toFixed(6) : '-';
+    const googleMapLink = data.googleMapLink || '#';
+    const photoUrl = data.photoUrl || '';
+    const status = data.status || '未処理';
+
+    // ステータス選択肢
+    const statusOptions = `
+            <select class="status-select" onchange="updateStatus('${id}', this.value)">
+                <option value="未処理" ${status === '未処理' ? 'selected' : ''}>未処理</option>
+                <option value="処理済" ${status === '処理済' ? 'selected' : ''}>処理済</option>
+            </select>
         `;
 
-        li.addEventListener('click', (e) => {
-            // セレクトボックスのクリックイベントは伝播させない
-            if (e.target.tagName === 'SELECT') return;
+    // 写真リンク
+    let photoHtml = '-';
+    if (photoUrl) {
+        photoHtml = `<a href="${photoUrl}" target="_blank"><img src="${photoUrl}" class="thumb-img" loading="lazy" alt="写真"></a>`;
+    }
 
-            focusOnMap(id, data.latitude, data.longitude);
-            highlightListItem(id);
+    // Google Mapリンク
+    let mapLinkHtml = '-';
+    if (data.googleMapLink) {
+        mapLinkHtml = `<a href="${data.googleMapLink}" target="_blank" class="map-link"><i class="fas fa-map-marker-alt"></i> Map</a>`;
+    }
+
+    tr.innerHTML = `
+            <td>${statusOptions}</td>
+            <td>${date}</td>
+            <td>${type}</td>
+            <td>${details}</td>
+            <td>${lat}, ${lng}</td>
+            <td>${mapLinkHtml}</td>
+            <td>${photoHtml}</td>
+            <td class="id-cell" title="${id}">${id}</td>
+        `;
+
+    tr.addEventListener('click', (e) => {
+        // インタラクティブ要素（セレクト、リンク）のクリックは無視
+        if (['SELECT', 'A', 'IMG', 'I'].includes(e.target.tagName)) return;
+
+        focusOnMap(id, data.latitude, data.longitude);
+        highlightTableRow(id);
+    });
+
+    return tr;
+}
+
+function createPopupContent(data) {
+    const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ja-JP') : '日時不明';
+    const status = data.status || '未処理';
+    let content = `<b>${data.type}</b> <span style="font-size:12px; color:${status === '処理済' ? 'green' : 'red'}">(${status})</span><br>${date}<br>${data.details || ''}`;
+    if (data.photoUrl) {
+        content += `<br><img src="${data.photoUrl}" style="width:100%; max-width:200px; margin-top:5px; border-radius:4px;">`;
+    }
+    if (data.googleMapLink) {
+        content += `<br><a href="${data.googleMapLink}" target="_blank">Google Mapで見る</a>`;
+    }
+    return content;
+}
+
+// グローバル関数として定義（HTMLから呼ぶため）
+window.updateStatus = async function (id, newStatus) {
+    try {
+        const db = firebase.firestore();
+        await db.collection('reports').doc(id).update({
+            status: newStatus
         });
+        // 簡易的にトースト表示（本来はライブラリなど使うと良い）
+        // alert('ステータスを更新しました'); 
+        // リロードせず、行の色を変えるなどの処理だけでも良いが、今回はシンプルに
 
-        return li;
+        // 行のスタイル更新（未処理/処理済の色分けなどあれば）
+        // 今回はセレクトボックスの値が変わるだけなので特になし
+        console.log('Status updated to ' + newStatus);
+    } catch (error) {
+        console.error("Error updating status: ", error);
+        alert('更新に失敗しました: ' + error.message);
     }
+};
 
-    function createPopupContent(data) {
-        const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ja-JP') : '日時不明';
-        const status = data.status || '未処理';
-        let content = `<b>${data.type}</b> <span style="font-size:12px; color:${status === '処理済' ? 'green' : 'red'}">(${status})</span><br>${date}<br>${data.details || ''}`;
-        if (data.photoUrl) {
-            content += `<br><img src="${data.photoUrl}" style="width:100%; max-width:200px; margin-top:5px; border-radius:4px;">`;
-        }
-        if (data.googleMapLink) {
-            content += `<br><a href="${data.googleMapLink}" target="_blank">Google Mapで見る</a>`;
-        }
-        return content;
+function highlightTableRow(id) {
+    // 全てのactiveクラスを削除
+    document.querySelectorAll('tr').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // 指定されたIDの行をactiveにする
+    const target = document.querySelector(`tr[data-id="${id}"]`);
+    if (target) {
+        target.classList.add('active');
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
+}
 
-    // グローバル関数として定義（HTMLから呼ぶため）
-    window.updateStatus = async function (id, newStatus) {
-        try {
-            const db = firebase.firestore();
-            await db.collection('reports').doc(id).update({
-                status: newStatus
-            });
-            // 画面リロードして反映（簡易実装）
-            // location.reload(); 
-            // リロードせずにUIだけ更新するほうがスマートだが、今回は確実性のためにリロード推奨
-            // ただし、ユーザー体験のためにトースト表示などを入れたいところ。
-            // ここでは簡易的にアラートを出してリロード
-            alert('ステータスを更新しました');
-            location.reload();
-        } catch (error) {
-            console.error("Error updating status: ", error);
-            alert('更新に失敗しました: ' + error.message);
-        }
-    };
-
-    function highlightListItem(id) {
-        // 全てのactiveクラスを削除
-        document.querySelectorAll('.report-item').forEach(item => {
-            item.classList.remove('active');
-        });
-
-        // 指定されたIDのアイテムをactiveにする
-        const target = document.querySelector(`.report-item[data-id="${id}"]`);
-        if (target) {
-            target.classList.add('active');
-            target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-            // ステータス変更コントロールを表示
-            const control = target.querySelector('.status-control');
-            if (control) control.style.display = 'block';
+function focusOnMap(id, lat, lng) {
+    if (lat && lng) {
+        map.setView([lat, lng], 16);
+        const marker = markers.find(m => m.reportId === id);
+        if (marker) {
+            marker.openPopup();
         }
     }
+}
 
-    function focusOnMap(id, lat, lng) {
-        if (lat && lng) {
-            map.setView([lat, lng], 16);
-            const marker = markers.find(m => m.reportId === id);
-            if (marker) {
-                marker.openPopup();
-            }
-        }
-    }
+// 実行
 
-    // 実行
-    initMap();
-    // Firebaseの初期化を待ってからロード
-    // init.jsが読み込まれると firebase.apps.length > 0 になるはず
-    const checkFirebase = setInterval(() => {
-        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-            clearInterval(checkFirebase);
-            loadReports();
-        }
-    }, 100);
-});

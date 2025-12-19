@@ -11,122 +11,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* 管理画面用スタイル */
-        .admin-container {
-            display: flex;
-            height: 100vh;
-            max-width: 100%;
-            margin: 0;
-            padding: 0;
-            border-radius: 0;
-        }
-
-        .sidebar {
-            width: 400px;
-            background-color: white;
-            border-right: 1px solid #ddd;
-            overflow-y: auto;
+        body {
             display: flex;
             flex-direction: column;
-            z-index: 1000;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .main-content {
-            flex: 1;
-            position: relative;
-        }
-
-        #admin-map {
-            width: 100%;
-            height: 100%;
-        }
-
-        .report-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .report-item {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .report-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .report-item.active {
-            background-color: #e3f2fd;
-            border-left: 4px solid #3498db;
-        }
-
-        .report-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-
-        .report-type {
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .report-date {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .report-details {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 5px;
-            white-space: nowrap;
+            height: 100vh;
             overflow: hidden;
-            text-overflow: ellipsis;
+            /* 全体スクロール禁止 */
         }
 
-        .report-status {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-            color: white;
-            margin-left: 10px;
-        }
-
-        .status-unprocessed {
-            background-color: #e74c3c;
-            /* Red */
-        }
-
-        .status-processed {
-            background-color: #2ecc71;
-            /* Green */
-        }
-
-        .status-select {
-            margin-top: 5px;
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        .sidebar-header {
-            padding: 15px;
+        .admin-header {
+            padding: 10px 20px;
             background-color: #3498db;
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
-        .sidebar-header h2 {
+        .admin-header h2 {
             margin: 0;
-            font-size: 18px;
+            font-size: 20px;
             color: white;
             border: none;
             padding: 0;
@@ -145,27 +50,144 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* レスポンシブ対応 */
+        /* 地図エリア */
+        .map-container {
+            height: 40%;
+            /* 上部40% */
+            width: 100%;
+            position: relative;
+            flex-shrink: 0;
+            border-bottom: 2px solid #ddd;
+        }
+
+        #admin-map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* テーブルエリア */
+        .table-container {
+            flex: 1;
+            /* 残りの高さ */
+            overflow: auto;
+            /* スクロール */
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f1f1f1;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        tr.active {
+            background-color: #e3f2fd;
+        }
+
+        /* ステータスバッジ */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .status-unprocessed {
+            background-color: #e74c3c;
+        }
+
+        .status-processed {
+            background-color: #2ecc71;
+        }
+
+        .status-select {
+            padding: 2px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        /* リンク */
+        a.map-link {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a.map-link:hover {
+            text-decoration: underline;
+        }
+
+        /* サムネイル */
+        .thumb-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+
+        /* ID列 */
+        .id-cell {
+            font-family: monospace;
+            font-size: 11px;
+            color: #7f8c8d;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* レスポンシブ */
         @media (max-width: 768px) {
-            .admin-container {
-                flex-direction: column;
+            .map-container {
+                height: 30%;
             }
 
-            .sidebar {
-                width: 100%;
-                height: 40%;
-                order: 2;
+            th,
+            td {
+                padding: 6px;
+                font-size: 12px;
             }
 
-            .main-content {
-                height: 60%;
-                order: 1;
+            .id-cell {
+                display: none;
             }
+
+            /* スマホではID非表示 */
         }
     </style>
 
     <!-- Firebase SDKs -->
     <script defer src="/__/firebase/10.7.1/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/10.7.1/firebase-auth-compat.js"></script>
     <script defer src="/__/firebase/10.7.1/firebase-firestore-compat.js"></script>
     <script defer src="/__/firebase/init.js"></script>
 
@@ -174,25 +196,47 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <!-- Admin Script -->
-    <script defer src="admin.js"></script>
+    <script defer src="auth.js?v=7"></script>
+    <script defer src="admin.js?v=7"></script>
 </head>
 
 <body>
-    <div class="admin-container">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>通報一覧</h2>
-                <button class="refresh-btn" onclick="location.reload()">
-                    <i class="fas fa-sync-alt"></i> 更新
-                </button>
-            </div>
-            <ul id="report-list" class="report-list">
-                <li class="report-item" style="text-align: center; color: #777;">読み込み中...</li>
-            </ul>
+    <div class="admin-header">
+        <h2>通報一覧</h2>
+        <div>
+            <a href="admin_email.html" style="color: white; margin-right: 15px; text-decoration: none;">
+                <i class="fas fa-envelope"></i> メール配信設定
+            </a>
+            <button class="refresh-btn" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i> 更新
+            </button>
         </div>
-        <div class="main-content">
-            <div id="admin-map"></div>
-        </div>
+    </div>
+
+    <div class="map-container">
+        <div id="admin-map"></div>
+    </div>
+
+    <div class="table-container">
+        <table id="report-table">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">ステータス</th>
+                    <th style="width: 140px;">受付日時</th>
+                    <th style="width: 100px;">通報種別</th>
+                    <th>詳細</th>
+                    <th style="width: 150px;">場所 (緯度, 経度)</th>
+                    <th style="width: 60px;">地図</th>
+                    <th style="width: 70px;">写真</th>
+                    <th class="id-cell" style="width: 80px;">ID</th>
+                </tr>
+            </thead>
+            <tbody id="report-list">
+                <tr>
+                    <td colspan="8" style="text-align: center; color: #777;">読み込み中...</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 

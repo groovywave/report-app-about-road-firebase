@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メール配信先管理 - 道路不具合通報</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn-add {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-add:hover {
+            background-color: #27ae60;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Firebase SDKs -->
+    <script defer src="/__/firebase/10.7.1/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/10.7.1/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/10.7.1/firebase-firestore-compat.js"></script>
+    <script defer src="/__/firebase/init.js"></script>
+
+    <script defer src="auth.js?v=7"></script>
+    <script defer src="admin_email.js?v=7"></script>
+</head>
+
+<body>
+    <div class="container">
+        <a href="admin.html" class="back-link"><i class="fas fa-arrow-left"></i> 通報一覧に戻る</a>
+
+        <h2>メール配信先管理</h2>
+        <p>ここで登録されたメールアドレスに、通報があった際に通知メールが送信されます。</p>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name">氏名</label>
+                <input type="text" id="name" placeholder="例: 山田 太郎">
+            </div>
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input type="email" id="email" placeholder="例: user@example.com">
+            </div>
+            <button class="btn-add" onclick="addRecipient()">追加</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>氏名</th>
+                    <th>メールアドレス</th>
+                    <th style="width: 80px;">操作</th>
+                </tr>
+            </thead>
+            <tbody id="recipient-list">
+                <tr>
+                    <td colspan="3" style="text-align: center;">読み込み中...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

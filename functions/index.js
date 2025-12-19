@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const axios = require("axios");
+const nodemailer = require("nodemailer");
 const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
@@ -55,11 +56,74 @@ exports.report = functions.region('asia-northeast1').https.onRequest((req, res) 
                 lineResult = await sendLineMessage(userId, validatedData, saveResult);
             }
 
-            // 5. メール通知 (ログ出力のみ)
-            console.log('メール通知 (Mock):', {
-                subject: `【道路通報】新規通報（種別：${validatedData.type}）`,
-                body: `詳細: ${validatedData.details || 'なし'}`
-            });
+            // 5. メール通知
+            try {
+                // 宛先リストを取得
+                const recipientsSnapshot = await db.collection('mail_recipients').get();
+                const recipients = [];
+                recipientsSnapshot.forEach(doc => {
+                    const rData = doc.data();
+                    if (rData.email && rData.email.includes('@')) {
+                        recipients.push(rData.email);
+                    }
+                });
+
+                if (recipients.length > 0) {
+                    const gmailConfig = functions.config().gmail;
+                    const gmailEmail = gmailConfig ? gmailConfig.email : null;
+                    const gmailPassword = gmailConfig ? gmailConfig.password : null;
+
+                    if (gmailEmail && gmailPassword) {
+                        const transporter = nodemailer.createTransport({
+                            service: 'gmail',
+                            auth: {
+                                user: gmailEmail,
+                                pass: gmailPassword
+                            }
+                        });
+
+                        const subject = `【道路通報】新規通報（種別：${validatedData.type}）`;
+                        let mailBody = "新しい道路通報がありましたので、お知らせします。\n\n";
+                        mailBody += "----------------------------------------\n";
+                        mailBody += "■ 通報内容\n";
+                        mailBody += "----------------------------------------\n";
+                        mailBody += `・受付日時: ${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}\n`;
+                        mailBody += `・通報種別: ${validatedData.type}\n`;
+                        mailBody += `・詳細: ${validatedData.details || '記載なし'}\n\n`;
+                        mailBody += `・場所の確認（Googleマップ）:\n${saveResult.googleMapLink}\n\n`;
+
+                        if (saveResult.photoUrl) {
+                            mailBody += `・写真の確認:\n${saveResult.photoUrl}\n\n`;
+                        } else {
+                            mailBody += "・写真: なし\n\n";
+                        }
+                        mailBody += "----------------------------------------\n";
+                        // Cloud FunctionsのURLではなく、Firebase HostingのURLを使用する
+                        // プロジェクトIDからHostingのURLを構築（または環境変数で管理しても良いが、今回は簡易的に構築）
+                        const projectId = process.env.GCLOUD_PROJECT || process.env.FIREBASE_CONFIG?.projectId;
+                        const hostingUrl = `https://${projectId}.web.app`;
+                        mailBody += `管理画面: ${hostingUrl}/admin.html\n`;
+                        mailBody += `配信設定: ${hostingUrl}/admin_email.html\n`;
+
+                        const mailOptions = {
+                            from: `"Road Report App" <${gmailEmail}>`,
+                            to: recipients.join(','),
+                            subject: subject,
+                            text: mailBody
+                        };
+
+                        await transporter.sendMail(mailOptions);
+                        console.log('Email sent to:', recipients);
+                    } else {
+                        console.log('Gmail config not found. Skipping email.');
+                    }
+                } else {
+                    console.log('No recipients found. Skipping email.');
+                }
+            } catch (mailError) {
+                console.error('Error sending email:', mailError);
+                // メール送信失敗しても、通報自体は成功とするためエラーは投げない
+            }
 
             res.status(200).json({
                 status: 'success',
