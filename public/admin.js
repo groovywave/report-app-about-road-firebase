@@ -10,6 +10,7 @@ window.startAdminApp = function (user) {
 let map;
 let markers = [];
 let reports = [];
+let lastDoc = null;
 
 // 地図の初期化
 function initMap() {
@@ -34,16 +35,31 @@ async function loadReports() {
         const db = firebase.firestore();
         // Firestoreの取得とタイムアウトを競走させる
         const snapshot = await Promise.race([
-            db.collection('reports').limit(100).get(),
+            db.collection('reports').orderBy('timestamp', 'desc').limit(100).get(),
             timeoutPromise
         ]);
 
         const tbody = document.getElementById('report-list');
         tbody.innerHTML = ''; // クリア
 
+        const loadMoreBtn = document.getElementById('load-more-btn');
+
         if (snapshot.empty) {
             tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">データがありません</td></tr>';
+            if (loadMoreBtn) loadMoreBtn.style.display = 'none';
             return;
+        }
+
+        lastDoc = snapshot.docs[snapshot.docs.length - 1];
+
+        if (loadMoreBtn) {
+            if (snapshot.docs.length < 100) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'inline-block';
+                loadMoreBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 次へ（さらに100件）';
+                loadMoreBtn.disabled = false;
+            }
         }
 
         const bounds = L.latLngBounds();
@@ -200,3 +216,77 @@ function focusOnMap(id, lat, lng) {
 
 // 実行
 
+// 追加読み込み機能
+window.loadNextReports = async function () {
+    if (!lastDoc) return;
+
+    const btn = document.getElementById('load-more-btn');
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 読み込み中...';
+        btn.disabled = true;
+    }
+
+    const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('読み込みがタイムアウトしました。ネットワーク接続を確認してください。')), 10000)
+    );
+
+    try {
+        const db = firebase.firestore();
+        const snapshot = await Promise.race([
+            db.collection('reports').orderBy('timestamp', 'desc').startAfter(lastDoc).limit(100).get(),
+            timeoutPromise
+        ]);
+
+        if (snapshot.empty) {
+            if (btn) {
+                btn.innerHTML = 'これ以上データはありません';
+                btn.disabled = true;
+            }
+            return;
+        }
+
+        lastDoc = snapshot.docs[snapshot.docs.length - 1];
+        const tbody = document.getElementById('report-list');
+        const bounds = L.latLngBounds();
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const id = doc.id;
+            reports.push({ id, ...data });
+
+            const tr = createTableRow(id, data);
+            tbody.appendChild(tr);
+
+            if (data.latitude && data.longitude) {
+                const marker = L.marker([data.latitude, data.longitude])
+                    .addTo(map)
+                    .bindPopup(createPopupContent(data));
+
+                marker.reportId = id;
+                markers.push(marker);
+                bounds.extend([data.latitude, data.longitude]);
+
+                marker.on('click', () => {
+                    highlightTableRow(id);
+                });
+            }
+        });
+
+        if (btn) {
+            if (snapshot.docs.length < 100) {
+                btn.style.display = 'none';
+            } else {
+                btn.innerHTML = '<i class="fas fa-chevron-down"></i> 次へ（さらに100件）';
+                btn.disabled = false;
+            }
+        }
+
+    } catch (error) {
+        console.error("Error getting next documents: ", error);
+        alert('追加読み込みに失敗しました: ' + error.message);
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-chevron-down"></i> 次へ（さらに100件）';
+            btn.disabled = false;
+        }
+    }
+};
