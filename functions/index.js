@@ -1,12 +1,20 @@
-const functions = require("firebase-functions");
+const { onRequest } = require("firebase-functions/v2/https");
+const { setGlobalOptions } = require("firebase-functions/v2");
+const { defineSecret } = require('firebase-functions/params');
 const admin = require("firebase-admin");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
-const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
 const db = admin.firestore();
 const bucket = admin.storage().bucket();
+
+// v2 のためのグローバル設定（全関数共通で東京リージョンを使用）
+setGlobalOptions({ region: 'asia-northeast1' });
+
+// シークレットの定義（GMAIL_EMAIL, GMAIL_PASSWORD）
+const gmailEmail = defineSecret('GMAIL_EMAIL');
+const gmailPassword = defineSecret('GMAIL_PASSWORD');
 
 // 環境変数から設定を取得
 const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
@@ -17,16 +25,13 @@ const LINE_MESSAGING_API_URL = 'https://api.line.me/v2/bot/message/push';
 const LINE_PROFILE_API_URL = 'https://api.line.me/v2/profile';
 const LINE_VERIFY_TOKEN_URL = 'https://api.line.me/oauth2/v2.1/verify';
 
-exports.config = functions.region('asia-northeast1').https.onRequest((req, res) => {
-    cors(req, res, () => {
-        res.json({
-            LIFF_ID: LIFF_ID
-        });
+exports.config = onRequest({ cors: true }, (req, res) => {
+    res.json({
+        LIFF_ID: LIFF_ID
     });
 });
 
-exports.report = functions.region('asia-northeast1').https.onRequest((req, res) => {
-    cors(req, res, async () => {
+exports.report = onRequest({ cors: true, secrets: [gmailEmail, gmailPassword] }, async (req, res) => {
         if (req.method !== 'POST') {
             return res.status(405).send('Method Not Allowed');
         }
@@ -69,16 +74,15 @@ exports.report = functions.region('asia-northeast1').https.onRequest((req, res) 
                 });
 
                 if (recipients.length > 0) {
-                    const gmailConfig = functions.config().gmail;
-                    const gmailEmail = gmailConfig ? gmailConfig.email : null;
-                    const gmailPassword = gmailConfig ? gmailConfig.password : null;
+                    const emailVal = gmailEmail.value();
+                    const passwordVal = gmailPassword.value();
 
-                    if (gmailEmail && gmailPassword) {
+                    if (emailVal && passwordVal) {
                         const transporter = nodemailer.createTransport({
                             service: 'gmail',
                             auth: {
-                                user: gmailEmail,
-                                pass: gmailPassword
+                                user: emailVal,
+                                pass: passwordVal
                             }
                         });
 
@@ -106,7 +110,7 @@ exports.report = functions.region('asia-northeast1').https.onRequest((req, res) 
                         mailBody += `配信設定: ${hostingUrl}/admin_email.html\n`;
 
                         const mailOptions = {
-                            from: `"Road Report App" <${gmailEmail}>`,
+                            from: `"Road Report App" <${emailVal}>`,
                             to: recipients.join(','),
                             subject: subject,
                             text: mailBody
@@ -141,7 +145,6 @@ exports.report = functions.region('asia-northeast1').https.onRequest((req, res) 
                 message: 'データの処理に失敗しました: ' + error.message
             });
         }
-    });
 });
 
 function validateAndSanitizeData(rawData) {

@@ -1,0 +1,161 @@
+[debug] [2026-03-21T01:31:52.030Z] ----------------------------------------------------------------------
+[debug] [2026-03-21T01:31:52.038Z] Command:       /home/hasenori/.nvm/versions/node/v24.13.1/bin/node /usr/local/bin/firebase deploy --only functions
+[debug] [2026-03-21T01:31:52.038Z] CLI Version:   15.5.1
+[debug] [2026-03-21T01:31:52.038Z] Platform:      linux
+[debug] [2026-03-21T01:31:52.038Z] Node Version:  v24.13.1
+[debug] [2026-03-21T01:31:52.038Z] Time:          Sat Mar 21 2026 10:31:52 GMT+0900 (Japan Standard Time)
+[debug] [2026-03-21T01:31:52.038Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-21T01:31:53.398Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-21T01:31:53.399Z] > authorizing via signed-in user (vacation555@gmail.com)
+[debug] [2026-03-21T01:31:53.399Z] [iam] checking project sample-app-cc8f2 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2026-03-21T01:31:53.399Z] Checked if tokens are valid: false, expires at: 1774055344393
+[debug] [2026-03-21T01:31:53.399Z] Checked if tokens are valid: false, expires at: 1774055344393
+[debug] [2026-03-21T01:31:53.399Z] > refreshing access token with scopes: []
+[debug] [2026-03-21T01:31:53.401Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-21T01:31:53.401Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-21T01:31:53.540Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-03-21T01:31:53.540Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-21T01:31:53.554Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions [none]
+[debug] [2026-03-21T01:31:53.554Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions  x-goog-user-project=sample-app-cc8f2
+[debug] [2026-03-21T01:31:53.554Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-03-21T01:31:53.744Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions 200
+[debug] [2026-03-21T01:31:53.745Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-03-21T01:31:53.745Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:53.745Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:53.745Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/sample-app-cc8f2/serviceAccounts/sample-app-cc8f2@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2026-03-21T01:31:53.745Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/sample-app-cc8f2/serviceAccounts/sample-app-cc8f2@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2026-03-21T01:31:54.017Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/sample-app-cc8f2/serviceAccounts/sample-app-cc8f2@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2026-03-21T01:31:54.017Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/sample-app-cc8f2/serviceAccounts/sample-app-cc8f2@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'sample-app-cc8f2'...
+[info] 
+[info] i  deploying functions 
+[debug] [2026-03-21T01:31:54.019Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:54.019Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:54.019Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2 [none]
+[debug] [2026-03-21T01:31:54.237Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2 200
+[debug] [2026-03-21T01:31:54.238Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2 {"projectNumber":"387493069728","projectId":"sample-app-cc8f2","lifecycleState":"ACTIVE","name":"sample-app","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-01-05T04:59:57.549907Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[debug] [2026-03-21T01:31:54.239Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:54.239Z] Checked if tokens are valid: true, expires at: 1774060312540
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2026-03-21T01:31:54.239Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:54.239Z] Checked if tokens are valid: true, expires at: 1774060312540
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2026-03-21T01:31:54.239Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:54.239Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:54.239Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/runtimeconfig.googleapis.com [none]
+[debug] [2026-03-21T01:31:54.239Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/runtimeconfig.googleapis.com  x-goog-user-project=sample-app-cc8f2
+[debug] [2026-03-21T01:31:54.241Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/cloudbuild.googleapis.com [none]
+[debug] [2026-03-21T01:31:54.241Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/cloudbuild.googleapis.com  x-goog-user-project=sample-app-cc8f2
+[debug] [2026-03-21T01:31:54.241Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/artifactregistry.googleapis.com [none]
+[debug] [2026-03-21T01:31:54.241Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/artifactregistry.googleapis.com  x-goog-user-project=sample-app-cc8f2
+[debug] [2026-03-21T01:31:55.295Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/runtimeconfig.googleapis.com 200
+[debug] [2026-03-21T01:31:55.295Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2026-03-21T01:31:55.301Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/cloudbuild.googleapis.com 200
+[debug] [2026-03-21T01:31:55.301Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/cloudbuild.googleapis.com [omitted]
+[warn] ⚠  functions: missing required API cloudbuild.googleapis.com. Enabling now... 
+[debug] [2026-03-21T01:31:55.301Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:55.301Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:55.301Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/cloudbuild.googleapis.com:enable [none]
+[debug] [2026-03-21T01:31:55.301Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/cloudbuild.googleapis.com:enable  x-goog-user-project=sample-app-cc8f2
+[debug] [2026-03-21T01:31:55.351Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/artifactregistry.googleapis.com 200
+[debug] [2026-03-21T01:31:55.351Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/artifactregistry.googleapis.com [omitted]
+[warn] ⚠  artifactregistry: missing required API artifactregistry.googleapis.com. Enabling now... 
+[debug] [2026-03-21T01:31:55.351Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:55.351Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:31:55.351Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/artifactregistry.googleapis.com:enable [none]
+[debug] [2026-03-21T01:31:55.351Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/artifactregistry.googleapis.com:enable  x-goog-user-project=sample-app-cc8f2
+[debug] [2026-03-21T01:31:55.658Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/artifactregistry.googleapis.com:enable 200
+[debug] [2026-03-21T01:31:55.658Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/artifactregistry.googleapis.com:enable [omitted]
+[debug] [2026-03-21T01:31:56.459Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/cloudbuild.googleapis.com:enable 200
+[debug] [2026-03-21T01:31:56.459Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/sample-app-cc8f2/services/cloudbuild.googleapis.com:enable [omitted]
+[debug] [2026-03-21T01:32:06.466Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:32:06.466Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:32:06.466Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2/adminSdkConfig [none]
+[debug] [2026-03-21T01:32:07.043Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2/adminSdkConfig 200
+[debug] [2026-03-21T01:32:07.043Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2/adminSdkConfig {"projectId":"sample-app-cc8f2","storageBucket":"sample-app-cc8f2.firebasestorage.app"}
+[debug] [2026-03-21T01:32:07.043Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:32:07.043Z] Checked if tokens are valid: true, expires at: 1774060312540
+[debug] [2026-03-21T01:32:07.044Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/sample-app-cc8f2/configs [none]
+[debug] [2026-03-21T01:32:07.528Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/sample-app-cc8f2/configs 200
+[debug] [2026-03-21T01:32:07.528Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/sample-app-cc8f2/configs {}
+[debug] [2026-03-21T01:32:07.529Z] Validating nodejs source
+[warn] ⚠  functions: Runtime Node.js 20 will be deprecated on 2026-04-30 and will be decommissioned on 2026-10-30, after which you will not be able to deploy without upgrading. Consider upgrading now to avoid disruption. See https://cloud.google.com/functions/docs/runtime-support for full details on the lifecycle policy 
+[warn] ⚠  functions: Couldn't find firebase-functions package in your source code. Have you run 'npm install'? 
+[debug] [2026-03-21T01:32:07.530Z] getFunctionsSDKVersion encountered error: Cannot find module 'firebase-functions'
+Require stack:
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/versioning.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/prepare.js
+- /usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulatorShared.js
+- /usr/local/lib/node_modules/firebase-tools/lib/frameworks/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/hosting/prepare.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/hosting/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/commands/deploy.js
+- /usr/local/lib/node_modules/firebase-tools/lib/commands/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/bin/cli.js
+- /usr/local/lib/node_modules/firebase-tools/lib/bin/firebase.js {"code":"MODULE_NOT_FOUND","requireStack":["/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/versioning.js","/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/index.js","/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/index.js","/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/prepare.js","/usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulatorShared.js","/usr/local/lib/node_modules/firebase-tools/lib/frameworks/index.js","/usr/local/lib/node_modules/firebase-tools/lib/deploy/hosting/prepare.js","/usr/local/lib/node_modules/firebase-tools/lib/deploy/hosting/index.js","/usr/local/lib/node_modules/firebase-tools/lib/deploy/index.js","/usr/local/lib/node_modules/firebase-tools/lib/commands/deploy.js","/usr/local/lib/node_modules/firebase-tools/lib/commands/index.js","/usr/local/lib/node_modules/firebase-tools/lib/index.js","/usr/local/lib/node_modules/firebase-tools/lib/bin/cli.js","/usr/local/lib/node_modules/firebase-tools/lib/bin/firebase.js"]}
+[debug] [2026-03-21T01:32:07.530Z] checkFunctionsSDKVersion encountered error: Invalid Version:  {}
+[debug] [2026-03-21T01:32:07.531Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Road Reporting App",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^11.8.0",
+    "firebase-functions": "^4.3.1",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "nodemailer": "^6.9.7"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2026-03-21T01:32:07.531Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2026-03-21T01:32:07.531Z] Could not parse firebase-functions version '' into semver.
+[debug] [2026-03-21T01:32:07.531Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-21T01:32:07.630Z] Error: Cannot find module 'firebase-functions'
+Require stack:
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/prepare.js
+- /usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulatorShared.js
+- /usr/local/lib/node_modules/firebase-tools/lib/frameworks/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/hosting/prepare.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/hosting/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/deploy/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/commands/deploy.js
+- /usr/local/lib/node_modules/firebase-tools/lib/commands/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/bin/cli.js
+- /usr/local/lib/node_modules/firebase-tools/lib/bin/firebase.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1448:15)
+    at require.resolve (node:internal/modules/helpers:163:19)
+    at Delegate.findFunctionsBinary (/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/index.js:101:33)
+    at Delegate.spawnFunctionsProcess (/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/index.js:131:30)
+    at Delegate.serveAdmin (/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/index.js:152:35)
+    at Delegate.discoverBuild (/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/runtimes/node/index.js:192:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async loadCodebases (/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/prepare.js:331:33)
+    at async prepare (/usr/local/lib/node_modules/firebase-tools/lib/deploy/functions/prepare.js:69:24)
+    at async chain (/usr/local/lib/node_modules/firebase-tools/lib/deploy/index.js:43:9)
+[error] 
+[error] Error: An unexpected error has occurred.
