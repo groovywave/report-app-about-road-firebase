@@ -2,9 +2,9 @@
 // ▼▼▼【重要】設定値を更新してください ▼▼▼
 const APP_SETTINGS = {
     // ★★★ ここにCloud FunctionsのURLを設定してください ★★★
-    CLOUD_FUNCTION_URL: 'https://asia-northeast1-road-report-app-h7n2.cloudfunctions.net/report',
+    CLOUD_FUNCTION_URL: 'https://report-gqacqvfgfa-an.a.run.app',
     // ★★★ ここにLIFF IDを設定してください ★★★
-    LIFF_ID: '2008504742-z0xNX8YL',
+    LIFF_ID: '2008161427-jAeXYzdQ',
 
     MAX_RETRY_ATTEMPTS: 3,
     RETRY_DELAY: 1000,
