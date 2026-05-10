@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         elements.map.on('move', updateCenterCoords);
         updateCenterCoords();
 
-        // 現在位置の取得
+        // 既存機能：アプリ起動時に自動で現在地を取得する
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 function (pos) {
@@ -172,15 +172,37 @@ document.addEventListener('DOMContentLoaded', async function () {
                 },
                 function (error) {
                     console.warn('位置情報の取得に失敗しました:', error);
-                    // タイムアウト等の場合は警告を出す
                     showNotification('現在地の取得に失敗したか、時間がかかっています。手動で地図を動かしてください。', 'warning');
                 },
                 {
-                    enableHighAccuracy: true, // 精度を高くする
-                    timeout: 10000,           // 10秒で諦める（無限に待機するのを防ぐ）
-                    maximumAge: 30000         // 30秒以内の過去のGPSデータがあれば即座にそれを使う（高速化）
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 30000
                 }
             );
+        }
+
+        // 現在地取得ボタンのイベントリスナー
+        const btnGetLocation = document.getElementById('btn-get-location');
+        if (btnGetLocation && navigator.geolocation) {
+            btnGetLocation.addEventListener('click', () => {
+                showNotification('現在地を取得しています...', 'info', 2000);
+                
+                navigator.geolocation.getCurrentPosition(
+                    function (pos) {
+                        elements.map.setView([pos.coords.latitude, pos.coords.longitude], 18);
+                    },
+                    function (error) {
+                        console.warn('位置情報の取得に失敗しました:', error);
+                        showNotification('手動で現場の場所を指定してください', 'warning', 3000);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000, // 5秒で諦める
+                        maximumAge: 30000
+                    }
+                );
+            });
         }
     }
 
@@ -331,7 +353,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // === 共通ユーティリティ関数 ===
     // 通知表示（統合版）
-    function showNotification(message, type = 'info') {
+    function showNotification(message, type = 'info', duration = 5000) {
         const existingNotification = document.querySelector('.notification');
         if (existingNotification) existingNotification.remove();
 
@@ -363,7 +385,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         `;
 
         document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 5000);
+        setTimeout(() => notification.remove(), duration);
     }
 
     // 画像をビットマップ化してから再エンコード（JPEG）する共通関数

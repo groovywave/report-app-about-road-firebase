@@ -1,0 +1,172 @@
+[debug] [2026-05-10T13:55:53.348Z] ----------------------------------------------------------------------
+[debug] [2026-05-10T13:55:53.358Z] Command:       /home/hasenori/.nvm/versions/node/v24.13.1/bin/node /home/hasenori/.nvm/versions/node/v24.13.1/bin/firebase deploy
+[debug] [2026-05-10T13:55:53.358Z] CLI Version:   15.11.0
+[debug] [2026-05-10T13:55:53.358Z] Platform:      linux
+[debug] [2026-05-10T13:55:53.359Z] Node Version:  v24.13.1
+[debug] [2026-05-10T13:55:53.359Z] Time:          Sun May 10 2026 22:55:53 GMT+0900 (Japan Standard Time)
+[debug] [2026-05-10T13:55:53.359Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-05-10T13:55:55.600Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-05-10T13:55:55.601Z] > authorizing via signed-in user (vacation555@gmail.com)
+[debug] [2026-05-10T13:55:55.601Z] [iam] checking project sample-app-cc8f2 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2026-05-10T13:55:55.602Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:55.603Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:55.604Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions [none]
+[debug] [2026-05-10T13:55:55.604Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions  x-goog-user-project=sample-app-cc8f2
+[debug] [2026-05-10T13:55:55.604Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[debug] [2026-05-10T13:55:56.278Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions 200
+[debug] [2026-05-10T13:55:56.278Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[debug] [2026-05-10T13:55:56.278Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:56.279Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:56.279Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/sample-app-cc8f2/serviceAccounts/sample-app-cc8f2@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2026-05-10T13:55:56.279Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/sample-app-cc8f2/serviceAccounts/sample-app-cc8f2@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2026-05-10T13:55:57.246Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/sample-app-cc8f2/serviceAccounts/sample-app-cc8f2@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2026-05-10T13:55:57.247Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/sample-app-cc8f2/serviceAccounts/sample-app-cc8f2@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2026-05-10T13:55:57.247Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:57.247Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:57.248Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2 [none]
+[debug] [2026-05-10T13:55:57.611Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2 200
+[debug] [2026-05-10T13:55:57.612Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2 {"projectId":"sample-app-cc8f2","projectNumber":"387493069728","displayName":"sample-app","name":"projects/sample-app-cc8f2","resources":{"hostingSite":"sample-app-cc8f2"},"state":"ACTIVE","etag":"1_e1e1e5f1-7627-4c7d-a15d-345a6d329bae"}
+[info] 
+[info] === Deploying to 'sample-app-cc8f2'...
+[info] 
+[info] i  deploying storage, firestore, functions, hosting 
+[info] i  storage: ensuring required API firebasestorage.googleapis.com is enabled... 
+[debug] [2026-05-10T13:55:57.616Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:57.617Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:57.617Z] >>> [apiv2][query] GET https://firebasestorage.googleapis.com/v1alpha/projects/sample-app-cc8f2/defaultBucket [none]
+[debug] [2026-05-10T13:55:58.366Z] <<< [apiv2][status] GET https://firebasestorage.googleapis.com/v1alpha/projects/sample-app-cc8f2/defaultBucket 200
+[debug] [2026-05-10T13:55:58.367Z] <<< [apiv2][body] GET https://firebasestorage.googleapis.com/v1alpha/projects/sample-app-cc8f2/defaultBucket {"name":"projects/sample-app-cc8f2/defaultBucket","location":"ASIA-EAST1","bucket":{"name":"projects/sample-app-cc8f2/buckets/sample-app-cc8f2.firebasestorage.app"},"storageClass":"REGIONAL"}
+[info] i  firebase.storage: checking storage.rules for compilation errors... 
+[debug] [2026-05-10T13:55:58.373Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:58.373Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:58.373Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/sample-app-cc8f2:test [none]
+[debug] [2026-05-10T13:55:58.373Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/sample-app-cc8f2:test [omitted]
+[debug] [2026-05-10T13:55:59.540Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/sample-app-cc8f2:test 200
+[debug] [2026-05-10T13:55:59.541Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/sample-app-cc8f2:test {}
+[info] ✔  firebase.storage: rules file storage.rules compiled successfully 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-05-10T13:55:59.543Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:59.543Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:59.543Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/sample-app-cc8f2/databases/(default) [none]
+[debug] [2026-05-10T13:55:59.707Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/sample-app-cc8f2/databases/(default) 200
+[debug] [2026-05-10T13:55:59.707Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/sample-app-cc8f2/databases/(default) {"name":"projects/sample-app-cc8f2/databases/(default)","uid":"f71f92bb-cc50-4721-90b0-6523b720e228","createTime":"2026-01-05T08:25:25.312822Z","updateTime":"2026-01-05T08:25:25.312822Z","locationId":"asia-northeast1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-05-10T12:56:00.867228Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"b","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","etag":"INXp5uvvrpQDMPjT8p/TrpQD"}
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2026-05-10T13:55:59.715Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:59.715Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:55:59.716Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/sample-app-cc8f2:test [none]
+[debug] [2026-05-10T13:55:59.716Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/sample-app-cc8f2:test [omitted]
+[debug] [2026-05-10T13:56:00.768Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/sample-app-cc8f2:test 200
+[debug] [2026-05-10T13:56:00.769Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/sample-app-cc8f2:test {}
+[info] ✔  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2026-05-10T13:56:00.770Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:00.770Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:00.770Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2 [none]
+[debug] [2026-05-10T13:56:00.965Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2 200
+[debug] [2026-05-10T13:56:00.965Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/sample-app-cc8f2 {"projectNumber":"387493069728","projectId":"sample-app-cc8f2","lifecycleState":"ACTIVE","name":"sample-app","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-01-05T04:59:57.549907Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2026-05-10T13:56:00.967Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:00.967Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:00.967Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2/adminSdkConfig [none]
+[debug] [2026-05-10T13:56:01.507Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2/adminSdkConfig 200
+[debug] [2026-05-10T13:56:01.507Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/sample-app-cc8f2/adminSdkConfig {"projectId":"sample-app-cc8f2","storageBucket":"sample-app-cc8f2.firebasestorage.app"}
+[debug] [2026-05-10T13:56:01.508Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:01.508Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:01.508Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/sample-app-cc8f2/configs [none]
+[debug] [2026-05-10T13:56:02.078Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/sample-app-cc8f2/configs 200
+[debug] [2026-05-10T13:56:02.079Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/sample-app-cc8f2/configs {}
+[debug] [2026-05-10T13:56:02.081Z] Validating nodejs source
+[warn] ⚠  functions: Runtime Node.js 20 was deprecated on 2026-04-30 and will be decommissioned on 2026-10-30, after which you will not be able to deploy without upgrading. Consider upgrading now to avoid disruption. See https://cloud.google.com/functions/docs/runtime-support for full details on the lifecycle policy 
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-05-10T13:56:03.241Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Road Reporting App",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^11.8.0",
+    "firebase-functions": "^4.3.1",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "nodemailer": "^6.9.7"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2026-05-10T13:56:03.241Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[info] i  functions: You are using a version of firebase-functions SDK (4.9.0) that does not have support for the newest Firebase Extensions features. Please update firebase-functions SDK to >=5.1.0 to use them correctly 
+[debug] [2026-05-10T13:56:03.243Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-05-10T13:56:03.250Z] Found firebase-functions binary at '/home/hasenori/coding/report-app-about-road-firebase/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8059
+
+[error] (node:39251) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[debug] [2026-05-10T13:56:04.219Z] Got response from /__/functions.yaml {"endpoints":{"config":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["asia-northeast1"],"labels":{},"httpsTrigger":{},"entryPoint":"config"},"report":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["asia-northeast1"],"secretEnvironmentVariables":[{"key":"GMAIL_EMAIL"},{"key":"GMAIL_PASSWORD"}],"labels":{},"httpsTrigger":{},"entryPoint":"report"}},"specVersion":"v1alpha1","requiredAPIs":[],"params":[{"type":"secret","name":"GMAIL_EMAIL"},{"type":"secret","name":"GMAIL_PASSWORD"}]}
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-05-10T13:56:08.260Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:08.260Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:08.260Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_EMAIL [none]
+[debug] [2026-05-10T13:56:08.560Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_EMAIL 200
+[debug] [2026-05-10T13:56:08.561Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_EMAIL {"name":"projects/387493069728/secrets/GMAIL_EMAIL","replication":{"automatic":{}},"createTime":"2026-03-21T00:09:18.724340Z","labels":{"firebase-managed":"functions"},"etag":"\"164d7d9cf9c34c\""}
+[debug] [2026-05-10T13:56:08.561Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:08.561Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:08.561Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_EMAIL/versions/latest [none]
+[debug] [2026-05-10T13:56:08.761Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_EMAIL/versions/latest 200
+[debug] [2026-05-10T13:56:08.761Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_EMAIL/versions/latest {"name":"projects/387493069728/secrets/GMAIL_EMAIL/versions/1","createTime":"2026-03-21T00:10:41.070643Z","state":"ENABLED","replicationStatus":{"automatic":{}},"etag":"\"164d7da1ccd633\""}
+[debug] [2026-05-10T13:56:08.762Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:08.762Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:08.762Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_PASSWORD [none]
+[debug] [2026-05-10T13:56:08.945Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_PASSWORD 200
+[debug] [2026-05-10T13:56:08.945Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_PASSWORD {"name":"projects/387493069728/secrets/GMAIL_PASSWORD","replication":{"automatic":{}},"createTime":"2026-03-21T00:13:27.868478Z","labels":{"firebase-managed":"functions"},"etag":"\"164d7dabcccdfb\""}
+[debug] [2026-05-10T13:56:08.946Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:08.946Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:08.946Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_PASSWORD/versions/latest [none]
+[debug] [2026-05-10T13:56:09.135Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_PASSWORD/versions/latest 200
+[debug] [2026-05-10T13:56:09.136Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/sample-app-cc8f2/secrets/GMAIL_PASSWORD/versions/latest {"name":"projects/387493069728/secrets/GMAIL_PASSWORD/versions/1","createTime":"2026-03-21T00:13:44.437926Z","state":"ENABLED","replicationStatus":{"automatic":{}},"etag":"\"164d7dacbacca6\""}
+[info] i  functions: preparing functions directory for uploading... 
+[info] i  functions: packaged /home/hasenori/coding/report-app-about-road-firebase/functions (75.91 KB) for uploading 
+[debug] [2026-05-10T13:56:09.194Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:09.194Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:09.194Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/projects/sample-app-cc8f2/locations/-/functions [none]
+[debug] [2026-05-10T13:56:09.849Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/projects/sample-app-cc8f2/locations/-/functions 200
+[debug] [2026-05-10T13:56:09.849Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/projects/sample-app-cc8f2/locations/-/functions {}
+[debug] [2026-05-10T13:56:09.849Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:09.850Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:09.850Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/sample-app-cc8f2/locations/-/functions filter=environment%3D%22GEN_2%22
+[debug] [2026-05-10T13:56:10.576Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/sample-app-cc8f2/locations/-/functions 200
+[debug] [2026-05-10T13:56:10.576Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/sample-app-cc8f2/locations/-/functions {"functions":[{"name":"projects/sample-app-cc8f2/locations/asia-northeast1/functions/config","buildConfig":{"build":"projects/387493069728/locations/asia-northeast1/builds/70f073df-6727-45fe-8b53-4b08d2f251ab","runtime":"nodejs20","entryPoint":"config","source":{"storageSource":{"bucket":"gcf-v2-sources-387493069728-asia-northeast1","object":"config/function-source.zip","generation":"1778418510569953"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/sample-app-cc8f2/locations/asia-northeast1/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-387493069728-asia-northeast1","object":"config/function-source.zip","generation":"1778418510569953"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/sample-app-cc8f2/serviceAccounts/387493069728-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/sample-app-cc8f2/locations/asia-northeast1/services/config","timeoutSeconds":60,"environmentVariables":{"LINE_CHANNEL_ACCESS_TOKEN":"PjCas7ARaxIpLpAU09AW4pOz7QOdiq7GSC5MjtvUYVHBPFmdyGY62y+FjTNqJjPLBbpAvLklV/FfOBi/L7y99r3oODWbT2+beFeEvAegU8g5rblq7o7ROI8BC9W4xeSkiiTiiedJ8PAcmiv90lMG6AdB04t89/1O/w1cDnyilFU=","LINE_LOGIN_CHANNEL_ID":"2008161427","LIFF_ID":"2008161427-jAeXYzdQ","FIREBASE_CONFIG":"{\"projectId\":\"sample-app-cc8f2\",\"storageBucket\":\"sample-app-cc8f2.firebasestorage.app\"}","GCLOUD_PROJECT":"sample-app-cc8f2","EVENTARC_CLOUD_EVENT_SOURCE":"projects/sample-app-cc8f2/locations/asia-northeast1/services/config","FUNCTION_TARGET":"config","LOG_EXECUTION_ID":"true"},"maxInstanceCount":20,"ingressSettings":"ALLOW_ALL","uri":"https://config-gqacqvfgfa-an.a.run.app","serviceAccountEmail":"387493069728-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"revision":"config-00003-ver","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2026-05-10T13:09:18.461562850Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"82da18f9a3df84a3280955917ceb24cb90ebc9da"},"environment":"GEN_2","url":"https://asia-northeast1-sample-app-cc8f2.cloudfunctions.net/config","createTime":"2026-03-21T01:34:43.913405961Z","satisfiesPzi":true},{"name":"projects/sample-app-cc8f2/locations/asia-northeast1/functions/report","buildConfig":{"build":"projects/387493069728/locations/asia-northeast1/builds/70f073df-6727-45fe-8b53-4b08d2f251ab","runtime":"nodejs20","entryPoint":"report","source":{"storageSource":{"bucket":"gcf-v2-sources-387493069728-asia-northeast1","object":"report/function-source.zip","generation":"1778418552485512"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/sample-app-cc8f2/locations/asia-northeast1/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-387493069728-asia-northeast1","object":"report/function-source.zip","generation":"1778418552485512"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/sample-app-cc8f2/serviceAccounts/387493069728-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/sample-app-cc8f2/locations/asia-northeast1/services/report","timeoutSeconds":60,"environmentVariables":{"LINE_CHANNEL_ACCESS_TOKEN":"PjCas7ARaxIpLpAU09AW4pOz7QOdiq7GSC5MjtvUYVHBPFmdyGY62y+FjTNqJjPLBbpAvLklV/FfOBi/L7y99r3oODWbT2+beFeEvAegU8g5rblq7o7ROI8BC9W4xeSkiiTiiedJ8PAcmiv90lMG6AdB04t89/1O/w1cDnyilFU=","LINE_LOGIN_CHANNEL_ID":"2008161427","LIFF_ID":"2008161427-jAeXYzdQ","FIREBASE_CONFIG":"{\"projectId\":\"sample-app-cc8f2\",\"storageBucket\":\"sample-app-cc8f2.firebasestorage.app\"}","GCLOUD_PROJECT":"sample-app-cc8f2","EVENTARC_CLOUD_EVENT_SOURCE":"projects/sample-app-cc8f2/locations/asia-northeast1/services/report","FUNCTION_TARGET":"report","LOG_EXECUTION_ID":"true","FUNCTION_SIGNATURE_TYPE":"http"},"maxInstanceCount":20,"ingressSettings":"ALLOW_ALL","uri":"https://report-gqacqvfgfa-an.a.run.app","serviceAccountEmail":"387493069728-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"secretEnvironmentVariables":[{"key":"GMAIL_EMAIL","projectId":"sample-app-cc8f2","secret":"GMAIL_EMAIL","version":"1"},{"key":"GMAIL_PASSWORD","projectId":"sample-app-cc8f2","secret":"GMAIL_PASSWORD","version":"1"}],"revision":"report-00003-gas","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2026-05-10T13:09:21.324738377Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"ebe9f27083833446b483bdd938ba5605af0c1020"},"environment":"GEN_2","url":"https://asia-northeast1-sample-app-cc8f2.cloudfunctions.net/report","createTime":"2026-03-21T01:35:43.499076153Z","satisfiesPzi":true}]}
+[info] i  functions: ensuring required API run.googleapis.com is enabled... 
+[info] i  functions: ensuring required API eventarc.googleapis.com is enabled... 
+[info] i  functions: ensuring required API pubsub.googleapis.com is enabled... 
+[info] i  functions: ensuring required API storage.googleapis.com is enabled... 
+[info] i  functions: generating the service identity for pubsub.googleapis.com... 
+[debug] [2026-05-10T13:56:10.582Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:10.582Z] Checked if tokens are valid: true, expires at: 1778422762023
+[info] i  functions: generating the service identity for eventarc.googleapis.com... 
+[debug] [2026-05-10T13:56:10.582Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:10.582Z] Checked if tokens are valid: true, expires at: 1778422762023
+[debug] [2026-05-10T13:56:10.582Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/387493069728/services/pubsub.googleapis.com:generateServiceIdentity [none]
+[debug] [2026-05-10T13:56:10.582Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1beta1/projects/387493069728/services/pubsub.googleapis.com:generateServiceIdentity  x-goog-user-project=387493069728
+[debug] [2026-05-10T13:56:10.583Z] >>> [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/387493069728/services/pubsub.googleapis.com:generateServiceIdentity {}
+[debug] [2026-05-10T13:56:10.586Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/387493069728/services/eventarc.googleapis.com:generateServiceIdentity [none]
+[debug] [2026-05-10T13:56:10.586Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1beta1/projects/387493069728/services/eventarc.googleapis.com:generateServiceIdentity  x-goog-user-project=387493069728
+[debug] [2026-05-10T13:56:10.586Z] >>> [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/387493069728/services/eventarc.googleapis.com:generateServiceIdentity {}
