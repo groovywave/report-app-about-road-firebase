@@ -186,13 +186,24 @@ document.addEventListener('DOMContentLoaded', async function () {
         const btnGetLocation = document.getElementById('btn-get-location');
         if (btnGetLocation && navigator.geolocation) {
             btnGetLocation.addEventListener('click', () => {
-                showNotification('現在地を取得しています...', 'info', 2000);
+                // ローディング画面を表示
+                const loaderText = document.getElementById('loader-text');
+                if (loaderText) loaderText.textContent = '現在地を取得中...';
+                elements.loader.classList.remove('hidden');
                 
                 navigator.geolocation.getCurrentPosition(
                     function (pos) {
+                        // 成功時：ローディングを隠す
+                        elements.loader.classList.add('hidden');
+                        if (loaderText) loaderText.textContent = '処理中です...';
+                        
                         elements.map.setView([pos.coords.latitude, pos.coords.longitude], 18);
                     },
                     function (error) {
+                        // 失敗（タイムアウト含む）時：ローディングを隠して警告を出す
+                        elements.loader.classList.add('hidden');
+                        if (loaderText) loaderText.textContent = '処理中です...';
+                        
                         console.warn('位置情報の取得に失敗しました:', error);
                         showNotification('手動で現場の場所を指定してください', 'warning', 3000);
                     },
