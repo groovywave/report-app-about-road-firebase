@@ -101,9 +101,14 @@
                         <i class="fas fa-location-arrow"></i> 現在地を取得
                     </button>
                 </div>
-                <div id="map-wrapper">
+                <div id="map-wrapper" style="position: relative;">
                     <div id="map"></div>
                     <i id="center-pin" class="fas fa-map-marker-alt"></i>
+                    <!-- マップ専用のローディングアイコン -->
+                    <div id="map-loader" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.7); z-index: 1000; justify-content: center; align-items: center; flex-direction: column;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #3498db; margin-bottom: 8px;"></i>
+                        <span style="font-size: 13px; font-weight: bold; color: #333;">現在地を取得中...</span>
+                    </div>
                 </div>
                 <div id="coords-display">地図を動かして位置を合わせてください</div>
                 <input type="hidden" id="latitude" name="latitude" required>
