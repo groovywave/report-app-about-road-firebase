@@ -67,14 +67,31 @@
             </div>
 
             <div class="form-group">
-                <label for="photo">3. 現場の写真 (任意)</label>
-                <div class="photo-controls">
-                    <label for="photo" class="button-like-input">
-                        <i class="fas fa-file-image"></i> ファイルを選択
-                    </label>
-                    <input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
+                <label>3. 現場の写真 (任意)</label>
+                
+                <!-- 遠景写真 -->
+                <div class="photo-section" style="margin-bottom: 15px;">
+                    <label for="photo-distant" style="display: block; font-size: 14px; margin-bottom: 5px; color: #555;">写真(遠景)</label>
+                    <div class="photo-controls">
+                        <label for="photo-distant" class="button-like-input">
+                            <i class="fas fa-file-image"></i> ファイルを選択
+                        </label>
+                        <input type="file" id="photo-distant" name="photo-distant" accept="image/*" style="display: none;">
+                    </div>
+                    <img id="image-preview-distant" src="#" alt="遠景写真プレビュー"/>
                 </div>
-                <img id="image-preview" src="#" alt="写真プレビュー"/>
+
+                <!-- 近景写真 -->
+                <div class="photo-section">
+                    <label for="photo-close" style="display: block; font-size: 14px; margin-bottom: 5px; color: #555;">写真(近景)</label>
+                    <div class="photo-controls">
+                        <label for="photo-close" class="button-like-input">
+                            <i class="fas fa-file-image"></i> ファイルを選択
+                        </label>
+                        <input type="file" id="photo-close" name="photo-close" accept="image/*" style="display: none;">
+                    </div>
+                    <img id="image-preview-close" src="#" alt="近景写真プレビュー"/>
+                </div>
             </div>
 
             <div class="form-group">

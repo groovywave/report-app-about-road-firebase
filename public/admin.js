@@ -112,7 +112,6 @@ function createTableRow(id, data) {
     const lat = data.latitude ? data.latitude.toFixed(6) : '-';
     const lng = data.longitude ? data.longitude.toFixed(6) : '-';
     const googleMapLink = data.googleMapLink || '#';
-    const photoUrl = data.photoUrl || '';
     const status = data.status || '未処理';
 
     // ステータス選択肢
@@ -124,10 +123,14 @@ function createTableRow(id, data) {
         `;
 
     // 写真リンク
-    let photoHtml = '-';
-    if (photoUrl) {
-        photoHtml = `<a href="${photoUrl}" target="_blank"><img src="${photoUrl}" class="thumb-img" loading="lazy" alt="写真"></a>`;
+    let photoHtml = '';
+    if (data.photoUrlDistant) {
+        photoHtml += `<a href="${data.photoUrlDistant}" target="_blank" title="遠景"><img src="${data.photoUrlDistant}" class="thumb-img" loading="lazy" alt="遠景"></a> `;
     }
+    if (data.photoUrlClose) {
+        photoHtml += `<a href="${data.photoUrlClose}" target="_blank" title="近景"><img src="${data.photoUrlClose}" class="thumb-img" loading="lazy" alt="近景"></a>`;
+    }
+    if (!photoHtml) photoHtml = '-';
 
     // Google Mapリンク
     let mapLinkHtml = '-';
@@ -161,8 +164,11 @@ function createPopupContent(data) {
     const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ja-JP') : '日時不明';
     const status = data.status || '未処理';
     let content = `<b>${data.type}</b> <span style="font-size:12px; color:${status === '処理済' ? 'green' : 'red'}">(${status})</span><br>${date}<br>${data.details || ''}`;
-    if (data.photoUrl) {
-        content += `<br><img src="${data.photoUrl}" style="width:100%; max-width:200px; margin-top:5px; border-radius:4px;">`;
+    if (data.photoUrlDistant) {
+        content += `<br><span style="font-size:10px; color:#555;">[遠景]</span><br><img src="${data.photoUrlDistant}" style="width:100%; max-width:200px; margin-top:2px; border-radius:4px;">`;
+    }
+    if (data.photoUrlClose) {
+        content += `<br><span style="font-size:10px; color:#555;">[近景]</span><br><img src="${data.photoUrlClose}" style="width:100%; max-width:200px; margin-top:2px; border-radius:4px;">`;
     }
     if (data.googleMapLink) {
         content += `<br><a href="${data.googleMapLink}" target="_blank">Google Mapで見る</a>`;

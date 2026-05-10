@@ -16,7 +16,10 @@ const APP_SETTINGS = {
 // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
 // グローバル変数
-let currentPhoto = { data: null, mimeType: null };
+let currentPhotos = {
+    distant: { data: null, mimeType: null },
+    close: { data: null, mimeType: null }
+};
 let lineAccessToken = null;
 let lineUserId = null;
 let CONFIG = {};
@@ -50,8 +53,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             form: document.getElementById('report-form'),
             btnSubmit: document.getElementById('btn-submit'),
             loader: document.getElementById('loader'),
-            photoInput: document.getElementById('photo'),
-            imagePreview: document.getElementById('image-preview'),
+            photoDistantInput: document.getElementById('photo-distant'),
+            imagePreviewDistant: document.getElementById('image-preview-distant'),
+            photoCloseInput: document.getElementById('photo-close'),
+            imagePreviewClose: document.getElementById('image-preview-close'),
             lineStatus: document.getElementById('line-status'),
             lineStatusText: document.getElementById('line-status-text'),
             accessTokenInput: document.getElementById('accessToken'),
@@ -216,9 +221,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         handleTypeChange();
 
         // 写真プレビュー
-        elements.photoInput.addEventListener('change', function () {
-            handlePhotoInput(this, elements);
-        });
+        if (elements.photoDistantInput) {
+            elements.photoDistantInput.addEventListener('change', function () {
+                handlePhotoInput(this, 'distant', elements);
+            });
+        }
+        if (elements.photoCloseInput) {
+            elements.photoCloseInput.addEventListener('change', function () {
+                handlePhotoInput(this, 'close', elements);
+            });
+        }
 
         // フォーム送信
         elements.form.addEventListener('submit', function (e) {
@@ -457,35 +469,38 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // 写真データ更新（統合版）
-    function updatePhoto(data, mimeType, elements) {
-        currentPhoto.data = data;
-        currentPhoto.mimeType = mimeType;
+    function updatePhoto(data, mimeType, type, elements) {
+        currentPhotos[type].data = data;
+        currentPhotos[type].mimeType = mimeType;
+        const previewEl = type === 'distant' ? elements.imagePreviewDistant : elements.imagePreviewClose;
+        const inputEl = type === 'distant' ? elements.photoDistantInput : elements.photoCloseInput;
+
         if (data && mimeType) {
-            elements.imagePreview.src = data;
-            elements.imagePreview.style.display = 'block';
+            previewEl.src = data;
+            previewEl.style.display = 'block';
         } else {
-            elements.imagePreview.src = '#';
-            elements.imagePreview.style.display = 'none';
+            previewEl.src = '#';
+            previewEl.style.display = 'none';
         }
-        elements.photoInput.value = '';
+        if (inputEl) inputEl.value = '';
     }
 
     // === 写真入力処理（画像圧縮機能付き） ===
-    function handlePhotoInput(input, elements) {
+    function handlePhotoInput(input, type, elements) {
         if (input.files && input.files[0]) {
             const file = input.files[0];
 
             // 元ファイルサイズのチェックはそのまま活かす
             if (file.size > CONFIG.MAX_FILE_SIZE) {
                 showNotification('ファイルサイズが大きすぎます。5MB以下のファイルを選択してください。', 'error');
-                updatePhoto(null, null, elements);
+                updatePhoto(null, null, type, elements);
                 return;
             }
 
             // ファイル形式のチェックもそのまま活かす
             if (!CONFIG.ALLOWED_FILE_TYPES.includes(file.type)) {
                 showNotification('対応していないファイル形式です。', 'error');
-                updatePhoto(null, null, elements);
+                updatePhoto(null, null, type, elements);
                 return;
             }
 
@@ -498,13 +513,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                 background: '#fff'
             })
                 .then((compressedBase64) => {
-                    updatePhoto(compressedBase64, 'image/jpeg', elements);
-                    console.log(`画像再エンコード完了（bitmap→jpeg）: ${Math.round(compressedBase64.length / 1024)} KB`);
+                    updatePhoto(compressedBase64, 'image/jpeg', type, elements);
+                    console.log(`画像再エンコード完了（bitmap→jpeg, ${type}）: ${Math.round(compressedBase64.length / 1024)} KB`);
                 })
                 .catch((err) => {
                     console.error(err);
                     showNotification('画像の再エンコードに失敗しました。', 'error');
-                    updatePhoto(null, null, elements);
+                    updatePhoto(null, null, type, elements);
                 });
         }
     }
@@ -526,7 +541,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             // 成功処理
             showNotification('通報を受け付けました。ご協力ありがとうございます。', 'success');
             elements.form.reset();
-            updatePhoto(null, null, elements);
+            updatePhoto(null, null, 'distant', elements);
+            updatePhoto(null, null, 'close', elements);
 
         } catch (error) {
             console.error('送信エラー:', error);
@@ -593,8 +609,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 longitude: formData.get('longitude'),
                 type: formData.get('type'),
                 details: formData.get('details'),
-                photoData: currentPhoto.data,
-                photoMimeType: currentPhoto.mimeType,
+                photoDataDistant: currentPhotos.distant.data,
+                photoMimeTypeDistant: currentPhotos.distant.mimeType,
+                photoDataClose: currentPhotos.close.data,
+                photoMimeTypeClose: currentPhotos.close.mimeType,
                 accessToken: currentAccessToken, // アクセストークンを送信
                 userId: lineUserId, // ユーザーIDも送信（参考用）
                 timestamp: new Date().toISOString()

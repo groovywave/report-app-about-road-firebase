@@ -96,8 +96,9 @@ exports.report = onRequest({ cors: true, secrets: [gmailEmail, gmailPassword] },
                         mailBody += `・詳細: ${validatedData.details || '記載なし'}\n\n`;
                         mailBody += `・場所の確認（Googleマップ）:\n${saveResult.googleMapLink}\n\n`;
 
-                        if (saveResult.photoUrl) {
-                            mailBody += `・写真の確認:\n${saveResult.photoUrl}\n\n`;
+                        if (saveResult.photoUrlDistant || saveResult.photoUrlClose) {
+                            if (saveResult.photoUrlDistant) mailBody += `・写真(遠景)の確認:\n${saveResult.photoUrlDistant}\n\n`;
+                            if (saveResult.photoUrlClose) mailBody += `・写真(近景)の確認:\n${saveResult.photoUrlClose}\n\n`;
                         } else {
                             mailBody += "・写真: なし\n\n";
                         }
@@ -135,7 +136,7 @@ exports.report = onRequest({ cors: true, secrets: [gmailEmail, gmailPassword] },
                 timestamp: new Date().toISOString(),
                 id: saveResult.id,
                 lineNotified: !!lineResult,
-                imageUploaded: !!saveResult.photoUrl
+                imageUploaded: !!(saveResult.photoUrlDistant || saveResult.photoUrlClose)
             });
 
         } catch (error) {
@@ -156,19 +157,23 @@ function validateAndSanitizeData(rawData) {
     }
 
     // photoDataの検証
-    if (rawData.photoData) {
-        // サイズチェック (簡易)
-        if (rawData.photoData.length > 7 * 1024 * 1024) { // Base64で約7MB (元ファイル5MB程度)
-            throw new Error('画像サイズが大きすぎます。');
-        }
-        if (!rawData.photoData.startsWith('data:image/')) {
-            throw new Error('無効な画像データ形式です。');
-        }
+    if (rawData.photoDataDistant) {
+        if (rawData.photoDataDistant.length > 7 * 1024 * 1024) throw new Error('遠景画像サイズが大きすぎます。');
+        if (!rawData.photoDataDistant.startsWith('data:image/')) throw new Error('無効な遠景画像データ形式です。');
+    }
+    if (rawData.photoDataClose) {
+        if (rawData.photoDataClose.length > 7 * 1024 * 1024) throw new Error('近景画像サイズが大きすぎます。');
+        if (!rawData.photoDataClose.startsWith('data:image/')) throw new Error('無効な近景画像データ形式です。');
     }
 
-    let photoMimeType = null;
-    if (rawData.photoData) {
-        photoMimeType = rawData.photoData.substring(5, rawData.photoData.indexOf(';'));
+    let photoMimeTypeDistant = null;
+    if (rawData.photoDataDistant) {
+        photoMimeTypeDistant = rawData.photoDataDistant.substring(5, rawData.photoDataDistant.indexOf(';'));
+    }
+    
+    let photoMimeTypeClose = null;
+    if (rawData.photoDataClose) {
+        photoMimeTypeClose = rawData.photoDataClose.substring(5, rawData.photoDataClose.indexOf(';'));
     }
 
     return {
@@ -176,8 +181,10 @@ function validateAndSanitizeData(rawData) {
         longitude,
         type: sanitizeText(rawData.type),
         details: rawData.details ? sanitizeText(rawData.details) : '',
-        photoData: rawData.photoData || null,
-        photoMimeType,
+        photoDataDistant: rawData.photoDataDistant || null,
+        photoMimeTypeDistant,
+        photoDataClose: rawData.photoDataClose || null,
+        photoMimeTypeClose,
         accessToken: rawData.accessToken || null
     };
 }
@@ -212,23 +219,41 @@ async function getUserIdFromAccessToken(accessToken) {
 
 async function saveToFirestoreAndStorage(data) {
     try {
-        let photoUrl = '';
-        let storagePath = '';
+        let photoUrlDistant = '';
+        let storagePathDistant = '';
+        let photoUrlClose = '';
+        let storagePathClose = '';
 
-        // 写真保存
-        if (data.photoData && data.photoMimeType) {
-            const base64Data = data.photoData.split(',')[1];
+        // 遠景写真保存
+        if (data.photoDataDistant && data.photoMimeTypeDistant) {
+            const base64Data = data.photoDataDistant.split(',')[1];
             const buffer = Buffer.from(base64Data, 'base64');
-            const filename = `reports/${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
+            const filename = `reports/${Date.now()}_distant_${Math.random().toString(36).substring(7)}.jpg`;
             const file = bucket.file(filename);
 
             await file.save(buffer, {
-                metadata: { contentType: data.photoMimeType },
-                public: true // 公開設定 (必要に応じて変更)
+                metadata: { contentType: data.photoMimeTypeDistant },
+                public: true
             });
 
-            photoUrl = file.publicUrl();
-            storagePath = filename;
+            photoUrlDistant = file.publicUrl();
+            storagePathDistant = filename;
+        }
+
+        // 近景写真保存
+        if (data.photoDataClose && data.photoMimeTypeClose) {
+            const base64Data = data.photoDataClose.split(',')[1];
+            const buffer = Buffer.from(base64Data, 'base64');
+            const filename = `reports/${Date.now()}_close_${Math.random().toString(36).substring(7)}.jpg`;
+            const file = bucket.file(filename);
+
+            await file.save(buffer, {
+                metadata: { contentType: data.photoMimeTypeClose },
+                public: true
+            });
+
+            photoUrlClose = file.publicUrl();
+            storagePathClose = filename;
         }
 
         const googleMapLink = `https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude}`;
@@ -242,14 +267,17 @@ async function saveToFirestoreAndStorage(data) {
             googleMapLink,
             type: data.type,
             details: data.details,
-            photoUrl,
-            storagePath,
+            photoUrlDistant,
+            storagePathDistant,
+            photoUrlClose,
+            storagePathClose,
             userId: data.userId
         });
 
         return {
             id: docRef.id,
-            photoUrl,
+            photoUrlDistant,
+            photoUrlClose,
             googleMapLink
         };
     } catch (error) {
@@ -263,7 +291,7 @@ async function sendLineMessage(userId, reportData, saveResult) {
         const messages = [];
 
         // Flex Message
-        messages.push(createFlexMessage(reportData, saveResult.photoUrl));
+        messages.push(createFlexMessage(reportData));
 
         // Location Message
         messages.push({
@@ -274,19 +302,28 @@ async function sendLineMessage(userId, reportData, saveResult) {
             longitude: reportData.longitude
         });
 
-        // Image Message
-        if (saveResult.photoUrl) {
+        // Image Message (Distant)
+        if (saveResult.photoUrlDistant) {
             messages.push({
                 type: 'image',
-                originalContentUrl: saveResult.photoUrl,
-                previewImageUrl: saveResult.photoUrl
+                originalContentUrl: saveResult.photoUrlDistant,
+                previewImageUrl: saveResult.photoUrlDistant
+            });
+        }
+        
+        // Image Message (Close)
+        if (saveResult.photoUrlClose) {
+            messages.push({
+                type: 'image',
+                originalContentUrl: saveResult.photoUrlClose,
+                previewImageUrl: saveResult.photoUrlClose
             });
         }
 
         // Text Message
         messages.push({
             type: 'text',
-            text: createLineTextMessage(reportData, saveResult.googleMapLink, saveResult.photoUrl)
+            text: createLineTextMessage(reportData, saveResult.googleMapLink, saveResult.photoUrlDistant, saveResult.photoUrlClose)
         });
 
         await axios.post(LINE_MESSAGING_API_URL, {
@@ -307,7 +344,7 @@ async function sendLineMessage(userId, reportData, saveResult) {
     }
 }
 
-function createFlexMessage(data, photoUrl) {
+function createFlexMessage(data) {
     return {
         type: 'flex',
         altText: '道路異状通報を受け付けました',
@@ -377,7 +414,7 @@ function createFlexMessage(data, photoUrl) {
     };
 }
 
-function createLineTextMessage(data, mapLink, photoLink) {
+function createLineTextMessage(data, mapLink, photoLinkDistant, photoLinkClose) {
     const timestamp = new Date().toLocaleString('ja-JP', {
         year: 'numeric', month: '2-digit', day: '2-digit',
         hour: '2-digit', minute: '2-digit'
@@ -389,8 +426,11 @@ function createLineTextMessage(data, mapLink, photoLink) {
     if (mapLink) {
         message += `📍 場所の確認:\n${mapLink}\n\n`;
     }
-    if (photoLink) {
-        message += `📷 写真の確認:\n${photoLink}\n\n`;
+    if (photoLinkDistant) {
+        message += `📷 写真(遠景)の確認:\n${photoLinkDistant}\n\n`;
+    }
+    if (photoLinkClose) {
+        message += `📷 写真(近景)の確認:\n${photoLinkClose}\n\n`;
     }
     message += `📍 通報を受け付けました。\n`;
     message += `ご協力ありがとうございました。`;
