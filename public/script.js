@@ -172,7 +172,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                 },
                 function (error) {
                     console.warn('位置情報の取得に失敗しました:', error);
-                    showNotification('位置情報の取得に失敗しました。手動で位置を調整してください。', 'warning');
+                    // タイムアウト等の場合は警告を出す
+                    showNotification('現在地の取得に失敗したか、時間がかかっています。手動で地図を動かしてください。', 'warning');
+                },
+                {
+                    enableHighAccuracy: true, // 精度を高くする
+                    timeout: 10000,           // 10秒で諦める（無限に待機するのを防ぐ）
+                    maximumAge: 30000         // 30秒以内の過去のGPSデータがあれば即座にそれを使う（高速化）
                 }
             );
         }
