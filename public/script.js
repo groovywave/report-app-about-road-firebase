@@ -182,36 +182,6 @@ document.addEventListener('DOMContentLoaded', async function () {
       );
     }
 
-    // 現在地取得ボタンのイベントリスナー
-    const btnGetLocation = document.getElementById('btn-get-location');
-    if (btnGetLocation && navigator.geolocation) {
-      btnGetLocation.addEventListener('click', () => {
-        // マップ内ローディング画面を表示
-        const mapLoader = document.getElementById('map-loader');
-        if (mapLoader) mapLoader.style.display = 'flex';
-
-        navigator.geolocation.getCurrentPosition(
-          function (pos) {
-            // 成功時：ローディングを隠す
-            if (mapLoader) mapLoader.style.display = 'none';
-
-            elements.map.setView([pos.coords.latitude, pos.coords.longitude], 18);
-          },
-          function (error) {
-            // 失敗（タイムアウト含む）時：ローディングを隠して警告を出す
-            if (mapLoader) mapLoader.style.display = 'none';
-
-            console.warn('位置情報の取得に失敗しました:', error);
-            showNotification('手動で現場の場所を指定してください', 'warning', 3000);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 5000, // 5秒で諦める
-            maximumAge: 30000
-          }
-        );
-      });
-    }
   }
 
   // === フォーム機能初期化 ===

@@ -48,7 +48,7 @@ textarea::placeholder { color: #6c757d; font-style: italic; }
 .button-like-input:hover { background-color: #5a6268; transform: translateY(-1px); }
 
 /* ===== 画像プレビュー ===== */
-#image-preview { display: none; max-width: 100%; height: auto; border-radius: 8px; border: 2px solid #e9ecef; margin-top: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+#image-preview-distant, #image-preview-close { display: none; max-width: 100%; height: auto; border-radius: 8px; border: 2px solid #e9ecef; margin-top: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
 
 /* ===== 地図セクション（修正版） ===== */
 #map-wrapper { position: relative; width: 100%; height: 300px; border: 2px solid #e9ecef; border-radius: 8px; overflow: hidden; margin-bottom: 15px; background-color: #f8f9fa; }
