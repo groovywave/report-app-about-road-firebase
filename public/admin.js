@@ -33,9 +33,26 @@ async function loadReports() {
 
     try {
         const db = firebase.firestore();
+        let query = db.collection('reports').orderBy('timestamp', 'desc');
+
+        // 日付フィルターの適用
+        const startInput = document.getElementById('filter-start')?.value;
+        const endInput = document.getElementById('filter-end')?.value;
+
+        if (startInput) {
+            const startDate = new Date(startInput + "T00:00:00");
+            query = query.where('timestamp', '>=', firebase.firestore.Timestamp.fromDate(startDate));
+        }
+        if (endInput) {
+            const endDate = new Date(endInput + "T23:59:59");
+            query = query.where('timestamp', '<=', firebase.firestore.Timestamp.fromDate(endDate));
+        }
+
+        query = query.limit(100);
+
         // Firestoreの取得とタイムアウトを競走させる
         const snapshot = await Promise.race([
-            db.collection('reports').orderBy('timestamp', 'desc').limit(100).get(),
+            query.get(),
             timeoutPromise
         ]);
 
@@ -238,8 +255,25 @@ window.loadNextReports = async function () {
 
     try {
         const db = firebase.firestore();
+        let query = db.collection('reports').orderBy('timestamp', 'desc');
+
+        // 日付フィルターの適用
+        const startInput = document.getElementById('filter-start')?.value;
+        const endInput = document.getElementById('filter-end')?.value;
+
+        if (startInput) {
+            const startDate = new Date(startInput + "T00:00:00");
+            query = query.where('timestamp', '>=', firebase.firestore.Timestamp.fromDate(startDate));
+        }
+        if (endInput) {
+            const endDate = new Date(endInput + "T23:59:59");
+            query = query.where('timestamp', '<=', firebase.firestore.Timestamp.fromDate(endDate));
+        }
+
+        query = query.startAfter(lastDoc).limit(100);
+
         const snapshot = await Promise.race([
-            db.collection('reports').orderBy('timestamp', 'desc').startAfter(lastDoc).limit(100).get(),
+            query.get(),
             timeoutPromise
         ]);
 
@@ -296,3 +330,83 @@ window.loadNextReports = async function () {
         }
     }
 };
+
+// フィルターボタンのアクション
+window.filterReports = function() {
+    // 現在のマーカーをすべて削除
+    markers.forEach(marker => map.removeLayer(marker));
+    markers = [];
+    reports = [];
+    lastDoc = null;
+
+    const tbody = document.getElementById('report-list');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #777;"><i class="fas fa-spinner fa-spin"></i> 検索中...</td></tr>';
+    
+    // 表示ボタンの無効化（連打防止）
+    const filterBtn = document.querySelector('.filter-btn');
+    if (filterBtn) filterBtn.disabled = true;
+
+    loadReports().finally(() => {
+        if (filterBtn) filterBtn.disabled = false;
+    });
+};
+
+// CSVダウンロード
+window.downloadCSV = function() {
+    if (reports.length === 0) {
+        alert('ダウンロードするデータがありません。');
+        return;
+    }
+
+    // CSVヘッダー
+    const headers = ['ID', 'ステータス', '受付日時', '通報種別', '詳細', '緯度', '経度', 'GoogleマップURL', '写真_遠景', '写真_近景'];
+    
+    // データ行の作成
+    const rows = reports.map(r => {
+        const date = r.timestamp ? new Date(r.timestamp.toDate()).toLocaleString('ja-JP') : '';
+        return [
+            r.id,
+            r.status || '未処理',
+            date,
+            r.type || '',
+            r.details || '',
+            r.latitude || '',
+            r.longitude || '',
+            r.googleMapLink || '',
+            r.photoUrlDistant || '',
+            r.photoUrlClose || ''
+        ].map(escapeCSV); // 各フィールドをエスケープ処理
+    });
+
+    // ヘッダーと行を結合
+    const csvContent = [headers.map(escapeCSV).join(',')].concat(rows.map(row => row.join(','))).join('\n');
+
+    // UTF-8 BOM付きでBlobを作成
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    const blob = new Blob([bom, csvContent], { type: 'text/csv' });
+
+    // ダウンロードリンクの作成とクリック
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    
+    // ファイル名の生成（例: reports_20231015.csv）
+    const today = new Date();
+    const yyyymmdd = today.getFullYear() + String(today.getMonth() + 1).padStart(2, '0') + String(today.getDate()).padStart(2, '0');
+    
+    a.href = url;
+    a.download = `reports_${yyyymmdd}.csv`;
+    a.click();
+    
+    URL.revokeObjectURL(url);
+};
+
+// CSV用のエスケープ処理（カンマ、改行、ダブルクォーテーション対策）
+function escapeCSV(val) {
+    if (val === null || val === undefined) return '""';
+    let str = String(val);
+    // 全てのダブルクォーテーションを2重にする
+    str = str.replace(/"/g, '""');
+    // フィールド全体をダブルクォーテーションで囲む
+    return `"${str}"`;
+}
+
